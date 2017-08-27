@@ -94,7 +94,9 @@ Install necessary modules:
 Create the db.sqlite3 file, but with no useful data:
 
 `$ python manage.py makemigrations`
+
 `$ python manage.py migrate`
+
 `$ python manage.py migrate --database=production`
 
 Create a superuser account, which might come in handy later:
