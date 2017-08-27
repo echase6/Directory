@@ -13,9 +13,13 @@ for particular names, like an address book or directory -- hence the name.
 
 It has not been deployed anywhere, so using it necessitates calls to localhost.
 So, for example:  
+
 `http://localhost:8000/addresses/?api=1&name=Eric` 
+
 will return all of the entries for 'Eric' in a JSON, which might look like this:
+
 `{"Eric": ["example@gmail.com", "example@hotmail.com, example@yahoo.com"]}`
+
 (This is true if such addresses have already been posted to the endpoint.)
 
 These are the possible fields for calls to the endpoint:
@@ -85,7 +89,7 @@ The website landing-page should be subsequently available at:
 
 Clone the repository.  It will provide the code to run:
 
-`$ git clone https://github.com/echase6/Directory`
+`$ git clone https://github.com/echase6/Directory.git`
 
 Install necessary modules:
 
