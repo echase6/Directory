@@ -72,6 +72,14 @@ The website landing-page should be subsequently available at:
  response:  {"Bob": ["bob@example.com"]}  200 OK
  ```
  
+ A few words about the databases.  This API uses two, one called 'default' and the other
+ called 'production'.  All PUT/POST/DELETE calls work on the default one but not on
+ the production one.  All of the GET calls return the results of both.  While this might
+ seem odd, the underlying code shows how reads from the databases can be made asynchronous.
+ In application, this might be useful in situations where large results can be obtained via
+ the GET call, while still being able to add or remove entries.  (OK, even I realize that
+ this is a stretch.)
+ 
 
 ### Installation And Run Steps:
 
@@ -85,7 +93,9 @@ Install necessary modules:
 
 Create the db.sqlite3 file, but with no useful data:
 
+`$ python manage.py makemigrations`
 `$ python manage.py migrate`
+`$ python manage.py migrate --database=production`
 
 Create a superuser account, which might come in handy later:
 
