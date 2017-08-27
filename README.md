@@ -12,15 +12,16 @@ being made about the content, but it was originally planned to store addresses
 for particular names, like an address book or directory -- hence the name.
 
 It has not been deployed anywhere, so using it necessitates calls to localhost.
-So, for example:  http://localhost:8000/addresses/?api=1&name=Eric will return
-all of the entries for 'Eric' in a JSON, which might look like this:
-{"Eric": ["example@gmail.com", "example@hotmail.com, example@yahoo.com"]}
+So, for example:  
+`http://localhost:8000/addresses/?api=1&name=Eric` 
+will return all of the entries for 'Eric' in a JSON, which might look like this:
+`{"Eric": ["example@gmail.com", "example@hotmail.com, example@yahoo.com"]}`
 (This is true if such addresses have already been posted to the endpoint.)
 
 These are the possible fields for calls to the endpoint:
--- 'api' (so far, only version 1 is being used, so this must =1)
--- 'name'
--- 'adddress'
+* 'api' (so far, only version 1 is being used, so this must =1)
+* 'name'
+* 'adddress'
 
 If the GET call does not have the 'name' field set then all entries in the
 database are returned.
@@ -36,11 +37,13 @@ Web Site serving is done through Django's standard process:
 `$ python manage.py runserver`
 
 The website landing-page should be subsequently available at:
- http://127.0.0.1:8000/addresses/
+` http://127.0.0.1:8000/addresses`
+ 
  
  Postman (https://www.getpostman.com/) has been used to validate this API.
  Here is a sequence of commands to demonstrate how it operates, presuming
  the database is empty to start with:
+ ```
  command:  GET  http://localhost:8000/addresses/?api=1
  response:  {}  200 OK
  command:  POST http://127.0.0.1:8000/addresses/?api=1&name=Eric&address=example@gmail.com
@@ -67,7 +70,7 @@ The website landing-page should be subsequently available at:
  response:  {"Eric": ["example@yahoo.com"], "Bob": ["bob@example.com"]}  200 OK
  command:  GET  http://localhost:8000/addresses/?api=1&name=Bob
  response:  {"Bob": ["bob@example.com"]}  200 OK
- 
+ ```
  
 
 ### Installation And Run Steps:
