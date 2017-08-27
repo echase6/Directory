@@ -4,7 +4,7 @@ from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from directory.logic import create_directory_entry
-from directory.logic import get_all_entries, get_entries_by_name
+from directory.logic_async import get_all_entries, get_entries_by_name
 from directory.logic import update_directory_entry, delete_directory_entry
 from directory.models import AddressEntry
 from directory.settings import API_VERSION
@@ -101,10 +101,10 @@ def respond_to_get(name):
     :param name:
     :return:
     """
-    if name != '':
-        entries = get_entries_by_name(name)
-    else:
+    if name == '':
         entries = get_all_entries()
+    else:
+        entries = get_entries_by_name(name)
     return JsonResponse(entries, safe=False)
 
 

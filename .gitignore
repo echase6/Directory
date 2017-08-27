@@ -9,7 +9,7 @@ venv
 .cache
 
 # Django Default DB
-db.sqlite3
+db.sqlite3*
 
 # Django Staged Static Files
 staticfiles

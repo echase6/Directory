@@ -1,6 +1,7 @@
 """This is a pipeline test, for automated tests of the logic"""
 
 from directory.logic import *
+from directory.logic_async import *
 
 
 def test_pipeline():
