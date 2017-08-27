@@ -82,7 +82,8 @@ def get_entries_by_name(name):
 def get_entries_by_name_address(name, address):
     """
     Get all entries that match the name and address, returned as a dictionary
-    This should only be one
+    This should only be one.
+    (This function does not have a use but may in the future)
     :param name: the key
     :param address: the key
     :return: Needs to be a dict
