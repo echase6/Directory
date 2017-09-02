@@ -6,7 +6,6 @@ from django.views.decorators.csrf import csrf_exempt
 from directory.logic import create_directory_entry
 from directory.logic_async import get_all_entries, get_entries_by_name
 from directory.logic import update_directory_entry, delete_directory_entry
-from directory.models import AddressEntry
 from directory.settings import API_VERSION
 
 
@@ -117,10 +116,11 @@ def respond_to_post(name, address):
     :param address:
     :return:
     """
-    try:
-        create_directory_entry(name, address)
+
+    success = create_directory_entry(name, address)
+    if success:
         return HttpResponse(status=200)
-    except AddressEntry.AlreadyExists:
+    else:
         return HttpResponse(status=403)
 
 
@@ -133,10 +133,10 @@ def respond_to_put(name, address):
     :param address:
     :return:
     """
-    try:
-        update_directory_entry(name, address)
+    success = update_directory_entry(name, address)
+    if success:
         return HttpResponse(status=200)
-    except AddressEntry.DoesNotExist:
+    else:
         return HttpResponse(status=404)
 
 
@@ -149,8 +149,8 @@ def respond_to_delete(name, address):
     :param address:
     :return:
     """
-    try:
-        delete_directory_entry(name, address)
+    success = delete_directory_entry(name, address)
+    if success:
         return HttpResponse(status=204)
-    except AddressEntry.DoesNotExist:
+    else:
         return HttpResponse(status=404)

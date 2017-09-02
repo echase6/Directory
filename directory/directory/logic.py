@@ -3,7 +3,7 @@
 from datetime import datetime
 
 from directory.models import AddressEntry
-from directory.settings import DATABASE
+from directory.settings import DATABASE_WRITABLE
 
 
 def create_directory_entry(name, address):
@@ -14,14 +14,15 @@ def create_directory_entry(name, address):
     :param address:
     :return:
     """
-    entries = AddressEntry.objects.using(DATABASE).filter(name=name,
+    entries = AddressEntry.objects.using(DATABASE_WRITABLE).filter(name=name,
                                                           address=address)
     if len(entries) == 0:
         new_item = AddressEntry(name=name, address=address,
                                 date_created=datetime.now(), version=1)
-        new_item.save(using=DATABASE)
-        return
-    raise AddressEntry.AlreadyExists
+        new_item.save(using=DATABASE_WRITABLE)
+        return True
+    else:
+        return False
 
 
 def update_directory_entry(name, address):
@@ -33,14 +34,15 @@ def update_directory_entry(name, address):
     :param address:
     :return:
     """
-    entries = AddressEntry.objects.using(DATABASE).filter(name=name,
+    entries = AddressEntry.objects.using(DATABASE_WRITABLE).filter(name=name,
                                                           address=address)
     if len(entries) > 0:
         entries[0].version += 1
         entries[0].date_updated = datetime.now()
-        entries[0].save(using=DATABASE)
+        entries[0].save(using=DATABASE_WRITABLE)
+        return True
     else:
-        raise AddressEntry.DoesNotExist
+        return False
 
 
 def delete_directory_entry(name, address):
@@ -52,9 +54,10 @@ def delete_directory_entry(name, address):
     :return:
     """
 
-    entries = AddressEntry.objects.using(DATABASE).filter(name=name,
+    entries = AddressEntry.objects.using(DATABASE_WRITABLE).filter(name=name,
                                                           address=address)
     if len(entries) > 0:
         entries.delete()
+        return True
     else:
-        raise AddressEntry.DoesNotExist
+        return False

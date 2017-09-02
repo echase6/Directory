@@ -53,5 +53,3 @@ class AddressEntry(models.Model):
                                                         self.date_updated,
                                                         self.version)
 
-    class AlreadyExists(Exception):
-        pass

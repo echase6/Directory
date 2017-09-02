@@ -4,31 +4,9 @@ These are the getters, which make asynchronous calls to the two databases
 """
 
 import asyncio
-from datetime import datetime
 
 from directory.models import AddressEntry
 from directory.settings import DATABASE, DATABASE_WRITABLE
-
-
-async def get_entries_async(database):
-    """
-    An asynchronous reader from the database
-    :param database:
-    :return:
-    """
-    entries = AddressEntry.objects.using(database).all()
-    return entries
-
-
-async def get_entries_async_by_name(database, name):
-    """
-    An asynchronous reader from the database
-    :param database:
-    :param name:
-    :return:
-    """
-    entries = AddressEntry.objects.using(database).filter(name=name)
-    return entries
 
 
 def get_all_entries():
@@ -43,12 +21,18 @@ def get_all_entries():
     event_loop = asyncio.ProactorEventLoop()  # This may be specific to Windows
     asyncio.set_event_loop(event_loop)
     loop = asyncio.get_event_loop()
-    entities, _ = loop.run_until_complete(asyncio.wait(queries_async))
+    entries, _ = loop.run_until_complete(asyncio.wait(queries_async))
+    return entries_to_dict(entries)
 
-    entity_list = []
-    for entity in entities:
-        entity_list += entity.result()
-    return entries_to_dict(entity_list)
+
+async def get_entries_async(database):
+    """
+    An asynchronous reader from the database
+    :param database:
+    :return:
+    """
+    entries = AddressEntry.objects.using(database).all()
+    return entries
 
 
 def get_entries_by_name(name):
@@ -64,37 +48,33 @@ def get_entries_by_name(name):
     event_loop = asyncio.ProactorEventLoop()  # This may be specific to Windows
     asyncio.set_event_loop(event_loop)
     loop = asyncio.get_event_loop()
-    entities, _ = loop.run_until_complete(asyncio.wait(queries_async))
+    entries, _ = loop.run_until_complete(asyncio.wait(queries_async))
+    return entries_to_dict(entries)
 
-    entity_list = []
-    for entity in entities:
-        entity_list += entity.result()
-    return entries_to_dict(entity_list)
+
+async def get_entries_async_by_name(database, name):
+    """
+    An asynchronous reader from the database
+    :param database:
+    :param name:
+    :return:
+    """
+    entries = AddressEntry.objects.using(database).filter(name=name)
+    return entries
 
 
 def entries_to_dict(entries):
-    r"""Convert entries to a dictionary, for serialiazation later
-
-    >>> entry1 = AddressEntry(name='Eric', address='gmail',
-    ... date_created=datetime.now(),
-    ... date_updated=datetime.now(), version=2)
-    >>> entries_to_dict([entry1])
-    {'Eric': ['gmail']}
-    >>> entry2 = AddressEntry(name='Eric', address='hotmail',
-    ... date_created=datetime.now(),
-    ... date_updated=datetime.now(), version=5)
-    >>> entries_to_dict([entry1, entry2])
-    {'Eric': ['gmail', 'hotmail']}
-    >>> entry3 = AddressEntry(name='Bob', address='yahoo',
-    ... date_created=datetime.now(),
-    ... date_updated=datetime.now(), version=2)
-    >>> sorted(entries_to_dict([entry1, entry2, entry3]).items())
-    [('Bob', ['yahoo']), ('Eric', ['gmail', 'hotmail'])]
+    """
+    Convert entries to a dictionary, for serialiazation later
     """
     entry_dict = {}
     for entry in entries:
-        if entry.name not in entry_dict:
-            entry_dict[entry.name] = [entry.address]
-        else:
-            entry_dict[entry.name].append(entry.address)
+        for entry_result in entry.result():
+            name = entry_result.name
+            address = entry_result.address
+            if name not in entry_dict:
+                entry_dict[name] = [address]
+            else:
+                if address not in entry_dict[name]:
+                    entry_dict[name].append(address)
     return entry_dict
